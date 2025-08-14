@@ -3,7 +3,8 @@ This small web application has been developed as part of an assessment procedure
 
 ## Some Remarks
 - The styling is created with React Bootstrap (as opposed to Tailwind) due to my higher skill level in Bootstrap.
-- Pagination not provided due to perceived bug in API endpoint (returns page 1 of length 100 regardless of query parameters).
+- Pagination is not provided due to perceived bug in API endpoint (returns page 1 of length 100 regardless of query parameters).
+- This was my first experience with TypeScript (I usually write React code with JS), expect some weirdness! 
 - To run the application, due to CORS restrictions on the API, you'll need to:
   - Disable CORS in your browser (what I did while developing and testing), OR
   - Use a CORS proxy, OR

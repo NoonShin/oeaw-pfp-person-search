@@ -1,14 +1,15 @@
-import {useEffect, useState} from 'react'
+import {type SyntheticEvent, useEffect, useState} from 'react'
 import axios from 'axios'
 import './App.css'
 import {Accordion, Button, Container, Form, Modal, Spinner, Tab, Table, Tabs} from "react-bootstrap";
+import {getSourceLabel} from "./constants/sources.tsx";
 
 interface Event {
   id : string;
   label : string;
   startDate? : string;
   endDate? : string;
-  relatedPlace? : { label: string; lat: number; long: number };
+  relatedPlace? : { label: string; lat: number; long: number; id: string };
 }
 
 interface SourceData {
@@ -52,7 +53,7 @@ export function UUIDModal({ uuid, show, onHide }: { uuid: string, show: boolean,
   return (
     <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Quick View</Modal.Title>
+        <Modal.Title>{!loading && sources.map(src => src.label).join(' / ')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {loading ? (
@@ -62,18 +63,26 @@ export function UUIDModal({ uuid, show, onHide }: { uuid: string, show: boolean,
         ) : (
           <Tabs defaultActiveKey={sources[0]?.label} fill>
             {sources.map((source) => (
-              <Tab eventKey={source.label} title={source.label} key={source.label} className={"p-3"}>
-                <strong>Source:</strong> <a href={source.subject} target="_blank" rel="noopener noreferrer">{source.subject}</a>
-                {!source.events.length &&
-                    <div className="text-center my-5">
-                        No information to show from this source!
-                    </div>
+              <Tab eventKey={source.label} title={getSourceLabel(source.subject)} key={source.label} className={"p-3"}>
+                <div className="mb-1">
+                  <strong>Recorded Name:</strong> {source.label}
+                </div>
+                <div className="mb-1">
+                  <strong>Source URI:</strong> <a href={source.subject} target="_blank" rel="noopener noreferrer">{source.subject}</a>
+                </div>
+                {source.events.length ? (
+                  <p><strong>Recorded Events:</strong></p>
+                ) : (
+                  <div className="text-center my-3">
+                    No event information from this source!
+                  </div>
+                )
                 }
                 {source.events.map((ev) => (
-                  <div key={ev.id} className="my-2">
-                    <strong>{ev.label}:</strong>{' '}
-                    {ev.startDate} {(ev.startDate && ev.endDate) ? '  —  ' : ''} {ev.endDate}
-                    {ev.relatedPlace && (
+                  <div key={ev.id} className="my-1">
+                    <div className="mx-4">
+                    {ev.label}: {ev.startDate} {(ev.startDate && ev.endDate) ? '  —  ' : ''} {ev.endDate}
+                    {ev.relatedPlace && ev.relatedPlace.id && (
                       <div className="mt-2">
                         <iframe
                           width="100%"
@@ -86,6 +95,7 @@ export function UUIDModal({ uuid, show, onHide }: { uuid: string, show: boolean,
                         <div className="text-muted text-center small">{ev.relatedPlace.label}</div>
                       </div>
                     )}
+                    </div>
                   </div>
                 ))}
               </Tab>
@@ -162,7 +172,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  function handleSubmit(e : React.SyntheticEvent) {
+  function handleSubmit(e : SyntheticEvent) {
     e.preventDefault();
 
     setLoading(true);
