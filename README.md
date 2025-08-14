@@ -9,3 +9,20 @@ This small web application has been developed as part of an assessment procedure
   - Disable CORS in your browser (what I did while developing and testing), OR
   - Use a CORS proxy, OR
   - Run a local development server with proxy configuration
+- Providing a backend for CORS proxy was assumed out of the scope of this assessment, contact me in case this is needed.
+
+## API Analysis
+
+### Technical issues
+- Endpoint ignores pagination parameters (page and size), the return result is always page 1 and size 100.
+- The order_by parameter does not provide available options and does not seem to work with some common options I tried (name, uuid, label, etc.). Consequently, the desc parameter does not seem to work.
+- The person-detail endpoint does not seem to need pagination (one object is returned) and does not include pagination information in its response.
+- Coordinate information does not follow naming convention 'lng' (uses 'long' instead) or mention coordinate system
+- There are multiple naming discrepancies: The 'UUID' in person-list is a 'URI', but further in the person-detail endpoint the 'UUID' seems to be only the PFP ID and not a full 'URI'. 'Source', 'Proxy', 'Subject' are used almost interchangeably with little explanation.
+- No advanced search possibility (e.g. based on location, date of birth, UUID)
+- Sometimes the person-detail endpoint returns an event that has the 'relatedPlace' object, but all values inside are set to ```null```. This throws off some checks.
+
+### Suggestions for improvement
+- It would be desirable if a single label for each person was additionally provided in the search result JSON; that is, in addition to the labels in sources, an umbrella label is provided. (In the current set-up, I included all source labels in the result; but this can be a bit messy...)
+- Include a separate endpoint for ```/person/{uuid}/events```
+- Overhaul the event information return; it seems pseudo-JSON-LD right now, but a lot of the information inside is not very usable (startDate and endDate for example, as almost always only one of them is used, so a different data model might be more useful).

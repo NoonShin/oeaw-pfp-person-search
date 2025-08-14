@@ -39,7 +39,6 @@ export function UUIDModal({ uuid, show, onHide }: { uuid: string, show: boolean,
 
     axios.get(uuid)
     .then((response) => {
-      console.log(response)
       setSources(response.data.sources)
     })
     .catch((error) => {
@@ -61,9 +60,9 @@ export function UUIDModal({ uuid, show, onHide }: { uuid: string, show: boolean,
             <Spinner animation="border" role="status" />
           </div>
         ) : (
-          <Tabs defaultActiveKey={sources[0]?.label} fill>
+          <Tabs defaultActiveKey={sources[0]?.subject} fill>
             {sources.map((source) => (
-              <Tab eventKey={source.label} title={getSourceLabel(source.subject)} key={source.label} className={"p-3"}>
+              <Tab eventKey={source.subject} title={getSourceLabel(source.subject)} key={source.label} className={"p-3"}>
                 <div className="mb-1">
                   <strong>Recorded Name:</strong> {source.label}
                 </div>
