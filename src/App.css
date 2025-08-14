@@ -1,0 +1,14 @@
+.header-text {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 1.5rem;
+}
+
+.tab-content {
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    border-top: none;
+}
